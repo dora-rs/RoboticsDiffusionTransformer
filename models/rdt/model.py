@@ -148,6 +148,7 @@ class RDT(nn.Module):
         # Add multimodal position embeddings
         x = x + self.x_pos_embed
         # Note the lang is of variable length
+        # assert len(lang_c.shape)== 3 # wd,test,todo
         lang_c = lang_c + self.lang_cond_pos_embed[:, :lang_c.shape[1]]
         img_c = img_c + self.img_cond_pos_embed
 

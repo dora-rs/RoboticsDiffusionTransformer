@@ -102,6 +102,8 @@ class CrossAttention(nn.Module):
     def forward(self, x: torch.Tensor, c: torch.Tensor, 
                 mask: torch.Tensor | None = None) -> torch.Tensor:
         B, N, C = x.shape
+        # print(c.shape) # todo ,test
+        # _, L, _ = c.shape # ori
         _, L, _ = c.shape
         q = self.q(x).reshape(B, N, self.num_heads, self.head_dim).permute(0, 2, 1, 3)
         kv = self.kv(c).reshape(B, L, 2, self.num_heads, self.head_dim).permute(2, 0, 3, 1, 4)

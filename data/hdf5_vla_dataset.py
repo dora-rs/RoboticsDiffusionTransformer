@@ -18,7 +18,7 @@ class HDF5VLADataset:
     def __init__(self) -> None:
         # [Modify] The path to the HDF5 dataset directory
         # Each HDF5 file contains one episode
-        HDF5_DIR = "data/datasets/agilex/rdt_data/"
+        HDF5_DIR = "/home/1ms.ai/dora/node-hub/dora-rdt-1b/dora_rdt_1b/RoboticsDiffusionTransformer/tests/cube_pick_and_place"
         self.DATASET_NAME = "agilex"
         
         self.file_paths = []
@@ -28,7 +28,7 @@ class HDF5VLADataset:
                 self.file_paths.append(file_path)
                 
         # Load the config
-        with open('configs/base.yaml', 'r') as file:
+        with open('/home/1ms.ai/dora/node-hub/dora-rdt-1b/dora_rdt_1b/RoboticsDiffusionTransformer/configs/base.yaml', 'r') as file:
             config = yaml.safe_load(file)
         self.CHUNK_SIZE = config['common']['action_chunk_size']
         self.IMG_HISORY_SIZE = config['common']['img_history_size']
@@ -133,20 +133,22 @@ class HDF5VLADataset:
             step_id = np.random.randint(first_idx-1, num_steps)
             
             # Load the instruction
-            dir_path = os.path.dirname(file_path)
-            with open(os.path.join(dir_path, 'expanded_instruction_gpt-4-turbo.json'), 'r') as f_instr:
-                instruction_dict = json.load(f_instr)
-            # We have 1/3 prob to use original instruction,
-            # 1/3 to use simplified instruction,
-            # and 1/3 to use expanded instruction.
-            instruction_type = np.random.choice([
-                'instruction', 'simplified_instruction', 'expanded_instruction'])
-            instruction = instruction_dict[instruction_type]
-            if isinstance(instruction, list):
-                instruction = np.random.choice(instruction)
+            # dir_path = os.path.dirname(file_path)
+            # with open(os.path.join(dir_path, 'expanded_instruction_gpt-4-turbo.json'), 'r') as f_instr:
+            #     instruction_dict = json.load(f_instr)
+            # # We have 1/3 prob to use original instruction,
+            # # 1/3 to use simplified instruction,
+            # # and 1/3 to use expanded instruction.
+            # instruction_type = np.random.choice([
+            #     'instruction', 'simplified_instruction', 'expanded_instruction'])
+            # instruction = instruction_dict[instruction_type]
+            # if isinstance(instruction, list):
+            #     instruction = np.random.choice(instruction)
             # You can also use precomputed language embeddings (recommended)
-            # instruction = "path/to/lang_embed.pt"
-            
+            import torch
+            instruction = "/home/1ms.ai/dora/node-hub/dora-rdt-1b/dora_rdt_1b/RoboticsDiffusionTransformer/outs/cube_pick_up_and place._embedding.pt"
+            #instruction = torch.load(instruction_path)['embeddings']
+            #instruction = os.path.join(os.path.dirname(file_path), "lang_embed.pt")
             # Assemble the meta
             meta = {
                 "dataset_name": self.DATASET_NAME,
@@ -204,6 +206,7 @@ class HDF5VLADataset:
             # Parse the images
             def parse_img(key):
                 imgs = []
+                return np.array(f['observations']['images'][key]).copy()
                 for i in range(max(step_id-self.IMG_HISORY_SIZE+1, 0), step_id+1):
                     img = f['observations']['images'][key][i]
                     imgs.append(cv2.imdecode(np.frombuffer(img, np.uint8), cv2.IMREAD_COLOR))

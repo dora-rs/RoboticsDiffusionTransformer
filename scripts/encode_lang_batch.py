@@ -12,7 +12,7 @@ GPU = 0
 MODEL_PATH = "google/t5-v1_1-xxl"
 CONFIG_PATH = "configs/base.yaml"
 # Modify the TARGET_DIR to your dataset path
-TARGET_DIR = "data/datasets/agilex/tfrecords/"
+TARGET_DIR = "/home/1ms.ai/dora/node-hub/dora-rdt-1b/dora_rdt_1b/RoboticsDiffusionTransformer/data/data/dataset/agilex/rdt_data/"
 
 
 def main():
